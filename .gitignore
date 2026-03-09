@@ -1,0 +1,94 @@
+# =========================
+
+# ROS2 / Colcon build files
+
+# =========================
+
+build/
+install/
+log/
+
+# Colcon metadata
+
+.colcon/
+.colcon_install_layout
+
+# =========================
+
+# Python artifacts
+
+# =========================
+
+**pycache**/
+*.pyc
+*.pyo
+*.pyd
+*.pyc.*
+
+# Python build artifacts
+
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+
+venv/
+.venv/
+env/
+
+# =========================
+
+# C++ build artifacts
+
+# =========================
+
+*.o
+*.so
+*.a
+*.out
+
+# CMake
+
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# =========================
+
+# Editor / IDE
+
+# =========================
+
+# VSCode
+
+.vscode/
+
+# CLion / IntelliJ
+
+.idea/
+
+# Eclipse
+
+.project
+.cproject
+.settings/
+
+# =========================
+
+# OS files
+
+# =========================
+
+# Linux
+
+*~
+
+# macOS
+
+.DS_Store
+
+# Windows
+
+Thumbs.db
