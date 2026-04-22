@@ -16,7 +16,7 @@ using namespace std::chrono_literals;
 class Stm32SyncDriver : public rclcpp::Node {
 public:
     Stm32SyncDriver() : Node("stm32_sync_driver") {
-        this->declare_parameter<std::string>("port", "/dev/ttyACM0");
+        this->declare_parameter<std::string>("port", "/dev/ttyUSB0"); //ttyACM0
         this->declare_parameter<std::string>("frame_id", "imu_link");
 
         std::string port_name = this->get_parameter("port").as_string();
@@ -64,18 +64,14 @@ private:
 
     binary_buffer_.insert(binary_buffer_.end(), buf, buf + n);
 
-    // Hľadáme začiatok správy posúvaním
     while (binary_buffer_.size() >= 20) {
-        // Ak sú na konci (index 18 a 19) tvoje značky, 
-        // znamená to, že index 0 je ZAČIATOK správy.
+        // Ak sú na konci (index 18 a 19) značky, znamená to, že index 0 je ZAČIATOK správy
         if (binary_buffer_[18] == '\n' && binary_buffer_[19] == '\0') {
             parse_and_publish_binary(binary_buffer_.data());
             binary_buffer_.erase(binary_buffer_.begin(), binary_buffer_.begin() + 20);
         } 
         else {
-            // Ak na konci nie sú značky, znamená to, že to, čo považujeme 
-            // za začiatok (index 0), ZAČIATOK NIE JE.
-            // Zahodíme teda jeden bajt a celé sa to posunie.
+            // Ak na konci nie sú značky, znamená to, že to, čo považujeme za začiatok (index 0), začiatok nie je. Zahodíme teda jeden bajt a celé sa to posunie.
             binary_buffer_.erase(binary_buffer_.begin());
         }
     }
@@ -98,7 +94,12 @@ private:
         //const double dps_to_rads = M_PI / 180.0;
 
         auto msg = sensor_msgs::msg::Imu();
-        msg.header.stamp = this->now(); // zatial ros2 cas
+        msg.header.stamp.sec = static_cast<int32_t>(major);
+
+        double nsec_calc = (static_cast<double>(minor) / 60000.0) * 1e9;
+        msg.header.stamp.nanosec = static_cast<uint32_t>(nsec_calc);
+
+        //msg.header.stamp = this->now(); // zatial ros2 cas
         msg.header.frame_id = this->get_parameter("frame_id").as_string();
 
         msg.linear_acceleration.x = (to_int16(data[2], data[3]) / accel_lsb_per_g);
@@ -111,7 +112,7 @@ private:
 
         imu_pub_->publish(msg);
         
-        RCLCPP_INFO(this->get_logger(), "Major: %u, Minor: %u", major, minor);
+        //RCLCPP_INFO(this->get_logger(), "Major: %u, Minor: %u", major, minor);
     }
 
     int fd_;
