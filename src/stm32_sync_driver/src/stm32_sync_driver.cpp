@@ -32,6 +32,8 @@ public:
         imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu", rclcpp::SensorDataQoS());
         timer_ = this->create_wall_timer(5ms, std::bind(&Stm32SyncDriver::read_callback, this));
         
+        tcflush(fd_, TCIOFLUSH);
+        
         RCLCPP_INFO(this->get_logger(), "STM32 Driver spustený");
     }
 
@@ -56,21 +58,28 @@ private:
     }
 
     void read_callback() {
-        uint8_t buf[1024];
-        int n = read(fd_, buf, sizeof(buf));
-        
-        if (n > 0) {
-            for (int i = 0; i < n; i++) {
-                binary_buffer_.push_back(buf[i]);
-                
-                // cakame na 20 bajtov
-                if (binary_buffer_.size() >= 20) {
-                    parse_and_publish_binary(binary_buffer_.data());
-                    binary_buffer_.clear();
-                }
-            }
+    uint8_t buf[1024];
+    int n = read(fd_, buf, sizeof(buf));
+    if (n <= 0) return;
+
+    binary_buffer_.insert(binary_buffer_.end(), buf, buf + n);
+
+    // Hľadáme začiatok správy posúvaním
+    while (binary_buffer_.size() >= 20) {
+        // Ak sú na konci (index 18 a 19) tvoje značky, 
+        // znamená to, že index 0 je ZAČIATOK správy.
+        if (binary_buffer_[18] == '\n' && binary_buffer_[19] == '\0') {
+            parse_and_publish_binary(binary_buffer_.data());
+            binary_buffer_.erase(binary_buffer_.begin(), binary_buffer_.begin() + 20);
+        } 
+        else {
+            // Ak na konci nie sú značky, znamená to, že to, čo považujeme 
+            // za začiatok (index 0), ZAČIATOK NIE JE.
+            // Zahodíme teda jeden bajt a celé sa to posunie.
+            binary_buffer_.erase(binary_buffer_.begin());
         }
     }
+}
 
     void parse_and_publish_binary(const uint8_t* data) {
         auto to_int16 = [](uint8_t msb, uint8_t lsb) {
@@ -78,8 +87,8 @@ private:
         };
 
         //countery
-        // uint16_t major = data[14] | (data[15] << 8);
-        // uint16_t minor = data[16] | (data[17] << 8);
+        uint16_t major = data[14] | (data[15] << 8);
+        uint16_t minor = data[16] | (data[17] << 8);
 
         // KONSTANTY ICM40609D vyplyvajuce z kodu
         const double accel_lsb_per_g = 8192.0; 
@@ -102,7 +111,7 @@ private:
 
         imu_pub_->publish(msg);
         
-        // RCLCPP_INFO(this->get_logger(), "Major: %u, Minor: %u", major, minor);
+        RCLCPP_INFO(this->get_logger(), "Major: %u, Minor: %u", major, minor);
     }
 
     int fd_;
