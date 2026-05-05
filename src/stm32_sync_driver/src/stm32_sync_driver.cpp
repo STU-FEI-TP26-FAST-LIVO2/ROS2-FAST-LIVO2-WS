@@ -94,7 +94,8 @@ private:
         //const double dps_to_rads = M_PI / 180.0;
 
         auto msg = sensor_msgs::msg::Imu();
-        msg.header.stamp.sec = static_cast<int32_t>(major);
+        uint32_t real_seconds = static_cast<uint32_t>(major) + 1678364100;
+        msg.header.stamp.sec = static_cast<int32_t>(real_seconds);
 
         double nsec_calc = (static_cast<double>(minor) / 60000.0) * 1e9;
         msg.header.stamp.nanosec = static_cast<uint32_t>(nsec_calc);
