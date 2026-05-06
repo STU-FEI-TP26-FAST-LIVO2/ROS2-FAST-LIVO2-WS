@@ -1,0 +1,16 @@
+/**:
+  ros__parameters:
+    camera:
+      model: EquidistantCamera
+      width: 720
+      height: 540
+      scale: 1.0
+      # TODO: Replace these placeholder intrinsics/distortion values with the real calibrated Basler values.
+      fx: 351.31400364193297
+      fy: 351.4911744656785
+      cx: 367.8522793375995
+      cy: 253.8402144980996
+      d0: -0.03696737352869157
+      d1: -0.008917880497032812
+      d2: 0.008912969593422046
+      d3: -0.0037685977496087313
