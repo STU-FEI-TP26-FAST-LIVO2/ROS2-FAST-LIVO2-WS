@@ -1,16 +1,23 @@
 /**:
   ros__parameters:
     camera:
-      model: EquidistantCamera
-      width: 720
-      height: 540
+      model: Pinhole
+      #width: 1920
+      #height: 1200
+      width: 960
+      height: 600
       scale: 1.0
-      # TODO: Replace these placeholder intrinsics/distortion values with the real calibrated Basler values.
-      fx: 351.31400364193297
-      fy: 351.4911744656785
-      cx: 367.8522793375995
-      cy: 253.8402144980996
-      d0: -0.03696737352869157
-      d1: -0.008917880497032812
-      d2: 0.008912969593422046
-      d3: -0.0037685977496087313
+
+      # fx: 1747.55641
+      # fy: 1754.27737
+      # cx: 946.197620
+      # cy: 589.306874
+      fx: 1.68609756e+03
+      fy: 1.68792006e+03
+      cx: 4.81837019e+02
+      cy: 2.57973326e+02
+
+      d0: -2.41328049e-01
+      d1: -8.24935335e-01
+      d2: 3.08067734e-04
+      d3: 1.87880947e-03

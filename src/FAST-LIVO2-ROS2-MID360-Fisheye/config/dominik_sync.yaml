@@ -4,7 +4,7 @@
       lid_topic: "/lidar_points"
       imu_topic: "/imu"
       img_topic: "/basler/image_raw"
-      img_en: 0
+      img_en: 1
       lidar_en: 1
       ros_driver_bug_fix: false
       enable_image_processing: false
@@ -16,16 +16,26 @@
       image_qos_depth: 200000
       imu_qos_depth: 200000
 
+    # extrin_calib:
+      # extrinsic_T: [0.0, 0.0, -0.0688752]
+      # extrinsic_R: [-1., 0., 0., 0., 1., 0., 0., 0., -1.]
+
+      # # TODO: Replace Rcl with the real Basler-to-LiDAR rotation from your calibration.
+      # Rcl: [1.0, 0.0, 0.0,
+      #       0.0, 0.0, -1.0,
+      #       0.0, 1.0, 0.0]
+      # # TODO: Replace Pcl with the real Basler-to-LiDAR translation from your calibration.
+      # Pcl: [0.0, 0.0957, -0.01060009275] #0.0957
+
     extrin_calib:
       extrinsic_T: [0.0, 0.0, -0.0688752]
       extrinsic_R: [-1., 0., 0., 0., 1., 0., 0., 0., -1.]
 
       # TODO: Replace Rcl with the real Basler-to-LiDAR rotation from your calibration.
-      Rcl: [1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, 1.0]
-      # TODO: Replace Pcl with the real Basler-to-LiDAR translation from your calibration.
-      Pcl: [0.0, 0.0, 0.0]
+      Rcl: [-1.0, 0.0, 0.0,
+            0.0, 0.0, -1.0,
+            0.0, -1.0, 0.0]
+      Pcl: [0.0, -0.009590, -0.0036441] 
 
     time_offset:
       imu_time_offset: 0.0
@@ -37,7 +47,7 @@
       filter_size_surf: 0.1
       lidar_type: 5
       scan_line: 16
-      blind: 1.0
+      blind: 0.7
 
     vio:
       max_iterations: 5
@@ -64,7 +74,7 @@
       dept_err: 0.02
       beam_err: 0.05
       min_eigen_value: 0.0001
-      voxel_size: 0.4
+      voxel_size: 0.2
       max_layer: 2
       max_points_num: 100
       layer_init_num: [5, 5, 5, 5, 5]
