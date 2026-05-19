@@ -24,7 +24,7 @@ cd ~/ROS2-FAST-LIVO2-WS
 colcon build --symlink-install
 ```
 
-V prípade Jetsona zlyháva build jedného z Vikit balíkov (nateraz to nie je dôležité, zaoberať sa tým budeme v prípade, že balík bude potrebný), a teda je lepšie buildovať takto
+V prípade Jetsona zlyháva build jedného z Vikit balíkov, a teda je lepšie buildovať takto
 ```
 cd ~/ROS2-FAST-LIVO2-WS
 colcon build --symlink-install --packages-ignore vikit_py
@@ -35,9 +35,6 @@ Po úspešnom buildnutí WS je potrebné ho source-núť, source-ujeme takto
 source install/setup.bash
 ```
 Na Jetsone by malo stačiť otvoriť nové okno terminálu. 
-
-#### Upozornenie č. 2
-Tento postup je len dočasný, nakoľko s Livoxom pracovať nebudeme.
 
 # 2. Postup na spustenie rosbagu a FAST-LIVO2
 Do ľubovoľného, respektíve novo vytvoreného priečinku (vo WS ale mimo src) je potrebné [stiahnuť dataset](https://hilti-challenge.com/dataset-2022). Odporúčam `Exp14 Basement 2`. V tomto priečinku spravíme konverziu z ROS1 rosbagu na ROS2 rosbag
