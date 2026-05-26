@@ -29,7 +29,7 @@ public:
 
         setup_uart();
         
-        imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu", rclcpp::SensorDataQoS());
+        imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu", rclcpp::SystemDefaultsQoS());
         timer_ = this->create_wall_timer(5ms, std::bind(&Stm32SyncDriver::read_callback, this));
         
         tcflush(fd_, TCIOFLUSH);

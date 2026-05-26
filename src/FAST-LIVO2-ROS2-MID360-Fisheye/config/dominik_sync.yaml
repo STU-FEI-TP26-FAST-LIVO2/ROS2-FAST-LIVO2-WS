@@ -28,14 +28,14 @@
       # Pcl: [0.0, 0.0957, -0.01060009275] #0.0957
 
     extrin_calib:
-      extrinsic_T: [0.0, 0.0, -0.0688752]
+      extrinsic_T: [0.0, 0.0, -0.06954819845]
       extrinsic_R: [-1., 0., 0., 0., 1., 0., 0., 0., -1.]
 
       # TODO: Replace Rcl with the real Basler-to-LiDAR rotation from your calibration.
       Rcl: [-1.0, 0.0, 0.0,
             0.0, 0.0, -1.0,
             0.0, -1.0, 0.0]
-      Pcl: [0.0, -0.009590, -0.0036441] 
+      Pcl: [0.0, -0.09590, -0.003819] 
 
     time_offset:
       imu_time_offset: 0.0
@@ -44,7 +44,7 @@
 
     preprocess:
       point_filter_num: 1
-      filter_size_surf: 0.1
+      filter_size_surf: 0.3
       lidar_type: 5
       scan_line: 16
       blind: 0.7
