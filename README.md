@@ -58,3 +58,36 @@ ros2 bag play exp14_basement_2 --clock
 Rosbag sa hneď spustí, dá sa zastaviť aj spomaliť (tieto informácie sa po spustení vypíšu). V ďalšom terminále spustíme FAST-LIVO2
 ```
 ros2 launch fast_livo hesaihilti.launch.py use_rviz:=True
+```
+
+ # 3. Konfiguračné súbory
+V adresári `src/FAST-LIVO2-ROS2-MID360-Fisheye/config` sa nachádzajú konfiguračné súbory s príponou *.yaml*, v ktorých nastavujeme parametre pre dostupný hardvér. Takéto súbory sú dva, jeden je pre všeobecné nastavenia FAST-LIVO2 a druhý je pre nastavenie kamery. Ak by sme chceli spustiť FAST-LIVO2 s iným hardvérom (napríklad v prípade spustenia online dostupných rosbagov), je potrebné tieto súbory upraviť a zahrnúť do launch súboru. Parametre, ktoré je pri zmene hardvéru nutné upraviť, sú takéto
+#### Konfiguračný súbor pre FAST-LIVO2
+Topic-y pre hardvér:
+```
+lid_topic: "/lidar_points"
+imu_topic: "/imu"
+img_topic: "/basler/image_raw"
+```
+Zmena z LIVO na LIO a naopak:
+```
+img_en: 1 # 1 - LIVO, 0 - LIO
+```
+Real time alebo simulácia:
+```
+use_sim_time: false # false - real time, true - simulácia
+```
+Extrinzická kalibrácia IMU → LiDAR:
+```
+extrinsic_T: [0.0, 0.0, -0.06954819845]
+extrinsic_R: [-1., 0., 0., 0., 1., 0., 0., 0., -1.]
+```
+Extrinzická kalibrácia kamera → LiDAR:
+```
+Rcl: [-1.0, 0.0, 0.0,
+     0.0, 0.0, -1.0,
+     0.0, -1.0, 0.0]
+Pcl: [0.0, -0.09590, -0.003819]
+```
+#### Konfiguračný súbor pre kameru
+V prípade kamery je potrebné upraviť všetky parametre, ktoré sa v súbore nachádzajú. Tieto parametre sú typ kamery (napríklad *Pinhole*), rozlíšenie, ohniskové vzdialenosti *fx* a *fy*, a hlavný bod *cx* a *cy*. Posledným parametrom sú distorzné koeficienty.
