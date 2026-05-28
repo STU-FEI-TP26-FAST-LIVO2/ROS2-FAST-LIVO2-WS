@@ -16,7 +16,7 @@ using namespace std::chrono_literals;
 class Stm32SyncDriver : public rclcpp::Node {
 public:
     Stm32SyncDriver() : Node("stm32_sync_driver") {
-        this->declare_parameter<std::string>("port", "/dev/ttyUSB0"); //ttyACM0
+        this->declare_parameter<std::string>("port", "/dev/ttyUSB0"); //ttyACM0, ttyUSB0
         this->declare_parameter<std::string>("frame_id", "imu_link");
 
         std::string port_name = this->get_parameter("port").as_string();
@@ -29,7 +29,7 @@ public:
 
         setup_uart();
         
-        imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu", rclcpp::SensorDataQoS());
+        imu_pub_ = this->create_publisher<sensor_msgs::msg::Imu>("imu", rclcpp::SystemDefaultsQoS());
         timer_ = this->create_wall_timer(5ms, std::bind(&Stm32SyncDriver::read_callback, this));
         
         tcflush(fd_, TCIOFLUSH);
@@ -90,11 +90,12 @@ private:
         const double accel_lsb_per_g = 8192.0; 
         const double gyro_lsb_per_dps = 16.384;
 
-        //const double g_to_ms2 = 9.80665;
-        //const double dps_to_rads = M_PI / 180.0;
+        const double g_to_ms2 = 9.80665;
+        const double dps_to_rads = M_PI / 180.0;
 
         auto msg = sensor_msgs::msg::Imu();
-        msg.header.stamp.sec = static_cast<int32_t>(major);
+        uint32_t real_seconds = static_cast<uint32_t>(major) + 1678364100;
+        msg.header.stamp.sec = static_cast<int32_t>(real_seconds);
 
         double nsec_calc = (static_cast<double>(minor) / 60000.0) * 1e9;
         msg.header.stamp.nanosec = static_cast<uint32_t>(nsec_calc);
@@ -102,13 +103,13 @@ private:
         //msg.header.stamp = this->now(); // zatial ros2 cas
         msg.header.frame_id = this->get_parameter("frame_id").as_string();
 
-        msg.linear_acceleration.x = (to_int16(data[2], data[3]) / accel_lsb_per_g);
-        msg.linear_acceleration.y = (to_int16(data[4], data[5]) / accel_lsb_per_g);
-        msg.linear_acceleration.z = (to_int16(data[6], data[7]) / accel_lsb_per_g);
+        msg.linear_acceleration.x = (to_int16(data[2], data[3]) / accel_lsb_per_g)*g_to_ms2;
+        msg.linear_acceleration.y = (to_int16(data[4], data[5]) / accel_lsb_per_g)*g_to_ms2;
+        msg.linear_acceleration.z = (to_int16(data[6], data[7]) / accel_lsb_per_g)*g_to_ms2;
 
-        msg.angular_velocity.x = (to_int16(data[8], data[9]) / gyro_lsb_per_dps) ;
-        msg.angular_velocity.y = (to_int16(data[10], data[11]) / gyro_lsb_per_dps);
-        msg.angular_velocity.z = (to_int16(data[12], data[13]) / gyro_lsb_per_dps) ;
+        msg.angular_velocity.x = dps_to_rads*(to_int16(data[8], data[9]) / gyro_lsb_per_dps) ;
+        msg.angular_velocity.y = dps_to_rads*(to_int16(data[10], data[11]) / gyro_lsb_per_dps);
+        msg.angular_velocity.z = dps_to_rads*(to_int16(data[12], data[13]) / gyro_lsb_per_dps) ;
 
         imu_pub_->publish(msg);
         

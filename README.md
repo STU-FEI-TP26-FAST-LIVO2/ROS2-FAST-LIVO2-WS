@@ -1,5 +1,10 @@
+# FAST-LIVO2 Workspace
+Tento workspace obsahuje potrebné balíky pre spustenie FAST-LIVO2 na ROS2. V tomto readme sú popísané kroky, ktoré je nutné vykonať pre úspešné buildnutie workspace-u a spustenie FAST-LIVO2, či už simulačne alebo v reálnom čase. Súčasti tohto workspace-u sú:
+- [FAST-LIVO2 balík](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-FAST-LIVO2) spolu s Livox a Vikit balíkmi, ktoré sú jeho prerekvizitami
+- [Hesai LiDAR balík](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-HesaiLidar)
+- [STM32 Sync Driver balík](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-STM32-Sync-Driver)
 # 1. Postup na build workspace-u
-Po úspešnej inštalácii [FAST-LIVO2 package-u](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-FAST-LIVO2) a všetkých potrebných prerekvizít je potrebné v správnom poradí buildnúť celý workspace. Postup je nasledovný
+Po úspešnej inštalácii FAST-LIVO2 balíku a všetkých potrebných prerekvizít na základe [postupu v príslušnom repozitári](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-FAST-LIVO2), je potrebné v správnom poradí buildnúť celý workspace. Postup je nasledovný
 
 ## Build Livoxu
 
@@ -24,7 +29,7 @@ cd ~/ROS2-FAST-LIVO2-WS
 colcon build --symlink-install
 ```
 
-V prípade Jetsona zlyháva build jedného z Vikit balíkov (nateraz to nie je dôležité, zaoberať sa tým budeme v prípade, že balík bude potrebný), a teda je lepšie buildovať takto
+V prípade Jetsona zlyháva build jedného z Vikit balíkov, a teda je lepšie buildovať takto
 ```
 cd ~/ROS2-FAST-LIVO2-WS
 colcon build --symlink-install --packages-ignore vikit_py
@@ -35,9 +40,6 @@ Po úspešnom buildnutí WS je potrebné ho source-núť, source-ujeme takto
 source install/setup.bash
 ```
 Na Jetsone by malo stačiť otvoriť nové okno terminálu. 
-
-#### Upozornenie č. 2
-Tento postup je len dočasný, nakoľko s Livoxom pracovať nebudeme.
 
 # 2. Postup na spustenie rosbagu a FAST-LIVO2
 Do ľubovoľného, respektíve novo vytvoreného priečinku (vo WS ale mimo src) je potrebné [stiahnuť dataset](https://hilti-challenge.com/dataset-2022). Odporúčam `Exp14 Basement 2`. V tomto priečinku spravíme konverziu z ROS1 rosbagu na ROS2 rosbag
@@ -61,3 +63,36 @@ ros2 bag play exp14_basement_2 --clock
 Rosbag sa hneď spustí, dá sa zastaviť aj spomaliť (tieto informácie sa po spustení vypíšu). V ďalšom terminále spustíme FAST-LIVO2
 ```
 ros2 launch fast_livo hesaihilti.launch.py use_rviz:=True
+```
+
+ # 3. Konfiguračné súbory
+V adresári `src/FAST-LIVO2-ROS2-MID360-Fisheye/config` sa nachádzajú konfiguračné súbory s príponou *.yaml*, v ktorých nastavujeme parametre pre dostupný hardvér. Takéto súbory sú dva, jeden je pre všeobecné nastavenia FAST-LIVO2 a druhý je pre nastavenie kamery. Ak by sme chceli spustiť FAST-LIVO2 s iným hardvérom (napríklad v prípade spustenia online dostupných rosbagov), je potrebné tieto súbory upraviť a zahrnúť do launch súboru (nachádzajúci sa v adresári `src/FAST-LIVO2-ROS2-MID360-Fisheye/launch`). Parametre, ktoré je pri zmene hardvéru nutné upraviť, sú takéto
+#### Konfiguračný súbor pre FAST-LIVO2 `src/FAST-LIVO2-ROS2-MID360-Fisheye/config/dominik_sync.yaml`
+Topic-y pre hardvér:
+```
+lid_topic: "/lidar_points"
+imu_topic: "/imu"
+img_topic: "/basler/image_raw"
+```
+Zmena z LIVO na LIO a naopak:
+```
+img_en: 1 # 1 - LIVO, 0 - LIO
+```
+Real time alebo simulácia:
+```
+use_sim_time: false # false - real time, true - simulácia
+```
+Extrinzická kalibrácia IMU → LiDAR:
+```
+extrinsic_T: [0.0, 0.0, -0.06954819845]
+extrinsic_R: [-1., 0., 0., 0., 1., 0., 0., 0., -1.]
+```
+Extrinzická kalibrácia kamera → LiDAR:
+```
+Rcl: [-1.0, 0.0, 0.0,
+     0.0, 0.0, -1.0,
+     0.0, -1.0, 0.0]
+Pcl: [0.0, -0.09590, -0.003819]
+```
+#### Konfiguračný súbor pre kameru `src/FAST-LIVO2-ROS2-MID360-Fisheye/config/basler_camera.yaml`
+V prípade kamery je potrebné upraviť všetky parametre, ktoré sa v súbore nachádzajú. Tieto parametre sú typ kamery (napríklad *Pinhole*), rozlíšenie, ohniskové vzdialenosti *fx* a *fy*, a hlavný bod *cx* a *cy*. Posledným parametrom sú distorzné koeficienty.
