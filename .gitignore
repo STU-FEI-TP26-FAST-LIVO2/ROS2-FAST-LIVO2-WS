@@ -7,6 +7,9 @@
 build/
 install/
 log/
+datasety/
+*.zip
+*.db3
 
 # Colcon metadata
 

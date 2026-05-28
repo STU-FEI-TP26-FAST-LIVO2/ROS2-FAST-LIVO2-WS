@@ -16,8 +16,8 @@ def generate_launch_description():
     rviz_config_file = os.path.join(get_package_share_directory("fast_livo"), "rviz_cfg", "fast_livo2.rviz")
 
     #Load parameters
-    avia_config_cmd = os.path.join(config_file_dir, "avia_metacamedu.yaml")
-    camera_config_cmd = os.path.join(config_file_dir, "camera_metacamedu.yaml")
+    avia_config_cmd = os.path.join(config_file_dir, "HILTI22.yaml")
+    camera_config_cmd = os.path.join(config_file_dir, "camera_fisheye_HILTI22.yaml")
 
     # Param use_rviz
     use_rviz_arg = DeclareLaunchArgument(
