@@ -1,10 +1,10 @@
 # FAST-LIVO2 Workspace
 Tento workspace obsahuje potrebné balíky pre spustenie FAST-LIVO2 na ROS2. V tomto readme sú popísané kroky, ktoré je nutné vykonať pre úspešné buildnutie workspace-u a spustenie FAST-LIVO2, či už simulačne alebo v reálnom čase. Súčasti tohto workspace-u sú:
-- [FAST-LIVO2 balík](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-FAST-LIVO2) spolu s Livox a Vikit balíkmi, ktoré sú jeho prerekvizitami
-- [Hesai LiDAR balík](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-HesaiLidar)
+- [FAST-LIVO2 balík](https://github.com/Rhymer-Lcy/FAST-LIVO2-ROS2-MID360-Fisheye) spolu s Livox a Vikit balíkmi, ktoré sú jeho prerekvizitami
+- [Hesai LiDAR balík](https://github.com/HesaiTechnology/HesaiLidar_ROS_2.0)
 - [STM32 Sync Driver balík](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-STM32-Sync-Driver)
 # 1. Postup na build workspace-u
-Po úspešnej inštalácii FAST-LIVO2 balíku a všetkých potrebných prerekvizít na základe [postupu v príslušnom repozitári](https://github.com/STU-FEI-TP26-FAST-LIVO2/ROS2-FAST-LIVO2), je potrebné v správnom poradí buildnúť celý workspace. Postup je nasledovný
+Po úspešnej inštalácii FAST-LIVO2 balíku a všetkých potrebných prerekvizít na základe [postupu v príslušnom repozitári](https://github.com/Rhymer-Lcy/FAST-LIVO2-ROS2-MID360-Fisheye), je potrebné v správnom poradí buildnúť celý workspace. Postup je nasledovný
 
 ## Build Livoxu
 
