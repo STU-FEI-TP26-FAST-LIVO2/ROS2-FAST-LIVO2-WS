@@ -96,3 +96,28 @@ Pcl: [0.0, -0.09590, -0.003819]
 ```
 #### Konfiguračný súbor pre kameru `src/FAST-LIVO2-ROS2-MID360-Fisheye/config/basler_camera.yaml`
 V prípade kamery je potrebné upraviť všetky parametre, ktoré sa v súbore nachádzajú. Tieto parametre sú typ kamery (napríklad *Pinhole*), rozlíšenie, ohniskové vzdialenosti *fx* a *fy*, a hlavný bod *cx* a *cy*. Posledným parametrom sú distorzné koeficienty.
+
+# 4. Spustenie celého systému
+Na spustenie FAST-LIVO2 spolu s LiDARom, IMU a kamerou slúži:
+
+```bash
+./run_all.sh
+```
+Tento príkaz postupne spustí jednotlivé procesy a pre každý z nich otvorí samostatný terminál.
+
+Užitočné premenné:
+```bash
+LIDAR_IFACE=eno1
+LIDAR_HOST_IP=192.168.1.100/24
+LIDAR_SENSOR_IP=192.168.1.201
+RUN_IMU=1
+RUN_FAST_LIVO=1
+RUN_RVIZ=True
+RUN_MONITOR=0
+RUN_REQUIRE_IMU_FOR_LIVO=1
+KILL_OLD=1
+```
+a príklad použitia
+```
+RUN_RVIZ=False ./run_all.sh
+```
